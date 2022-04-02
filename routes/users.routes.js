@@ -22,7 +22,7 @@ router.get('/', getUsers)
 router.post('/', [
     validar_jwt,
     adminRole,
-    tieneRol('ADMIN_USER', 'COMMON_USER'),
+    tieneRol('admin_user', 'common_user'),
     check('username', 'El usuario no es correcto')
     .isEmail(),
 

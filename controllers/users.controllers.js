@@ -26,12 +26,13 @@ ctrlUsers.createUser = async (req, res) => {
     let newUser = {};
 
     // Desestructuramos la información recibida del cliente
-    const { username, password, role, ...otros_datos_recibidos } = req.body;
+    const { username, password, email, role, ...otherData } = req.body;
 
     // Se instancia un nuevo usuario
     try {
 
         newUser = new User({
+            email,
             username,
             password,
             role
@@ -42,10 +43,10 @@ ctrlUsers.createUser = async (req, res) => {
         newUser.password = bcryptjs.hashSync(password, salt);
 
         // Se alamacena el nuevo usuario en la base de datos
-        await newUser.save();
+        const userSaved = await newUser.save();
         return res.json({
             msg: 'Usuario creado exitosamente!',
-            usuario: newUser
+            usuario: userSaved
         });
     } catch (error) {
         console.log('No se pudo crear el usuario, vuelva a intentarlo: ', error);
