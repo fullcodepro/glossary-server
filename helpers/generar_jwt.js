@@ -1,15 +1,14 @@
-const { response } = require('express');
 const jwt = require('jsonwebtoken');
 
-const generar_jwt = (uid = '') => {
-    const payload = { uid };
+const generar_jwt = (uid) => {
+    
     return new Promise((resolve, reject) => {
-
-        jwt.sign(payload, process.env.SECRETORPRIVATEKEY,
+        payload = { uid }
+        jwt.sign(payload, process.env.SECRETORPRIVATEKEY, { expiresIn: '1h' },
             (error, token) => {
                 if (error) {
                     console.log(error)
-                    reject('Error al generar token')
+                    reject('Error al generar token - generar_jwt')
                 }
 
                 resolve(token)

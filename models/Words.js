@@ -1,27 +1,25 @@
 const { model, Schema } = require('mongoose');
 
 const NewWordSchema = Schema({
-    name: {
-        type: String,
-        required: true,
-    },
+    categoryId: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Categories',
+    }],
     definition: {
         type: String,
         required: true
     },
-    category: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Categories',
-    }],
+    date: {
+        type: Date,
+        required: true
+    },
+    wordName: {
+        type: String,
+        required: true,
+    },
 }, {
     timestamps: true,
     versionKey: false
 })
-
-NewWordSchema.methods.toJSON = function(){
-    const { _id, ...word } = this.toObject();
-    word.id = _id;
-    return word;
-};
 
 module.exports = model('Words', NewWordSchema);

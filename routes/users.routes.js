@@ -46,7 +46,7 @@ router.post('/', [
 router.put('/:id', [
     validar_jwt,
     
-    tieneRol('ADMIN_USER'),
+    tieneRol('admin_user'),
     
     check('id', 'No es un ID de MongoDB válido')
     .isMongoId(),

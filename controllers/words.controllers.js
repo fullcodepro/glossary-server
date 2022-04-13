@@ -1,10 +1,12 @@
 const Words = require("../models/Words");
-
+const Categories = require('../models/Cateogries');
 const ctrlWords = {};
 
 ctrlWords.getWords = async (req, res) => {
     try {
-        const words = await Words.find();
+        const words = await Words.find()
+            .populate('categoryId')
+            .sort({ wordName: 1 });
 
         return res.json(words);
     } catch (error) {
@@ -16,14 +18,14 @@ ctrlWords.getWords = async (req, res) => {
 };
 
 ctrlWords.getWordById = async (req, res) => {
-    const { id: _id } = req.params;
+    const { id } = req.params;
 
     if (!id) return res.status(400).json({
         msg: 'Todos los campos son necesarios'
     });
 
     try {
-        const words = await Words.findById(_id);
+        const words = await Words.findById(id);
 
         return res.json(words);
     } catch (error) {
@@ -36,17 +38,25 @@ ctrlWords.getWordById = async (req, res) => {
 
 ctrlWords.postWord = async (req, res) => {
 
-    const { name, definition, ...otherData } = req.body;
+    const { wordName, definition, categoryId, ...otherData } = req.body;
 
-    if (!name || !definition) return res.status(400).json({
+    if (!wordName || !definition || !categoryId) return res.status(400).json({
         msg: 'Todos los campos son necesarios'
     });
 
     try {
-        const newWord = new Words({ name: name.toLowerCase(), definition });
+        const data = {
+            wordName: wordName.toLowerCase(),
+            definition, categoryId,
+            date: new Date()
+        }
+        const newWord = new Words(data);
         const word = await newWord.save();
 
-        return res.json(word);
+        return res.status(201).json({
+            msg: 'Item agregado satisfactoriamente.',
+            word
+        });
     } catch (error) {
         console.log('Error al crear palabra: ', error);
         return res.status(500).json({
@@ -57,16 +67,24 @@ ctrlWords.postWord = async (req, res) => {
 };
 
 ctrlWords.putWordById = async (req, res) => {
-    const { name, definition, ...otherData } = req.body;
-    const { id: _id } = req.params;
-    if (!name || !definition || !_id) return res.status(400).json({
+    const { wordName, definition, categoryId, ...otherData } = req.body;
+    const { id } = req.params;
+    if (!wordName || !definition || !id || !categoryId) return res.status(400).json({
         msg: 'Todos los campos son necesarios'
     });
 
     try {
-        const wordUpdated = await Words.findByIdAndUpdate(_id, { name: name.toLowerCase(), definition }, { new: true });
+        toUpdateWord = {
+            wordName: wordName.toLowerCase(),
+            definition,
+            categoryId
+        }
+        const wordUpdated = await Words.findByIdAndUpdate(id, toUpdateWord );
 
-        return res.json(wordUpdated);
+        return res.status(200).json({
+            msg: 'Item actualizado con éxito',
+            wordUpdated
+        });
     } catch (error) {
         console.log('Error al actualizar palabra: ', error);
         return res.status(500).json({
@@ -76,18 +94,33 @@ ctrlWords.putWordById = async (req, res) => {
 };
 
 ctrlWords.deleteWordById = async (req, res) => {
-    const { id: _id, ...otherData } = req.body;
+    const { id } = req.params;
 
-    if (!_id) return res.status(400).json({
+    if (!id) return res.status(400).json({
         msg: 'Todos los campos son necesarios'
     });
 
     try {
-        const wordDeleted = await Words.findByIdAndDelete(_id, { new: true });
-
-        return res.json(wordDeleted);
+    const wordToDelete = await Words.findById(id);
+        if(!wordToDelete) return res.status(400).json({
+            msg:'El item que desea eliminar no existe'
+        });
     } catch (error) {
-        console.log('Error al actualizar palabra: ', error);
+        console.log('Error el intentar eliminar un item: ', error);
+        return res.status(500).json({
+            msg:'Error internal server'
+        })
+    }
+
+    try {
+        const deletedWorld = await Words.findByIdAndDelete(id);
+
+        return res.json({
+            msg: 'Item eliminado con éxito.',
+            deletedWorld
+        });
+    } catch (error) {
+        console.log('Error al eliminar palabra: ', error);
         return res.status(500).json({
             msg: 'Error internal server'
         })

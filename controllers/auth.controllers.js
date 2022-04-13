@@ -6,10 +6,10 @@ const ctrlAuth = {};
 
 ctrlAuth.signin = async (req, res) => {
 
-    let { username, password, ...otrosDatos } = req.body
+    const { username, password, ...otherData } = req.body
 
     try {
-        // Validar si existe user con el email recibido
+        // Validar si existe el usuario
     const user = await Users.findOne({ username });
     
     if(!user){
@@ -34,11 +34,11 @@ ctrlAuth.signin = async (req, res) => {
         })
     }
 
-    console.log(user)
-
+    // console.log(user)
+    const uid = user._id
     // Generar el token
-    const token = await generar_jwt(user.id)
-
+    const token = await generar_jwt(uid)
+    
     // Responder al user
     res.json({
        user,

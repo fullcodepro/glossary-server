@@ -1,11 +1,11 @@
 const { response, request } = require("express");
-const User = require('../models/Users');
+const Users = require('../models/Users');
 const jwt = require('jsonwebtoken');
 
 // Función para validar los tokens recibidos en las rutas protegidas
 const validar_jwt = async (req = request, res = response, next) => {
     // Se almacena el token recibido del cliente
-    const token = req.header('x-token');
+    const token = req.header('authorization');
     
     // Se verifica si el token existe en la petición
     if(!token){
@@ -21,7 +21,7 @@ const validar_jwt = async (req = request, res = response, next) => {
         
 
         // Buscar el usuario con la base de datos y luego se verifica si existe
-        const user = await User.findById(uid);
+        const user = await Users.findById(uid);
 
         if(!user){
             return res.status(401).json({
@@ -43,7 +43,7 @@ const validar_jwt = async (req = request, res = response, next) => {
         // Continuar al siguiente middleware
         next()
     } catch (error) {
-        console.log('Error al verificar token: ', token);
+        console.log('Error al verificar token: ', token, error);
         return res.status(401).json({
             msg:'Token inválido - Error al verificar token'
         })

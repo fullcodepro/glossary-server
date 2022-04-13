@@ -2,15 +2,15 @@ const router = require('express').Router();
 const path = require('path');
 
 const {
-    getCategory,
+    getCategories,
     getCategoryById,
     postCategory,
     putCategoryById,
     deleteCategoryById
-} = require('../controllers/words.controllers');
+} = require('../controllers/categories.controllers');
 
 
-router.get('/', getCategory);
+router.get('/', getCategories);
 
 router.get('/:id', getCategoryById);
 

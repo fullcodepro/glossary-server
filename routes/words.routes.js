@@ -10,17 +10,39 @@ const {
     putWordById,
     deleteWordById
 } = require('../controllers/words.controllers');
+const { validar_jwt } = require('../middlewares/validar_jwt');
+const { validarCampos } = require('../middlewares/validar_campos');
+const { check } = require('express-validator');
 
 
-router.get('/', getWords);
+router.get('/', [
+    validar_jwt,
+    validarCampos
+], getWords);
 
-router.get('/:id', getWordById);
+router.get('/:id', [
+    validar_jwt,
+    check('id', 'La petición no contiene un identificador válido')
+    .isMongoId,
+    validarCampos
+], getWordById);
 
-router.post('/', postWord);
+router.post('/', [
+    validar_jwt,
+    validarCampos
+], postWord);
 
-router.put('/:id', putWordById);
+router.put('/:id', [
+    validar_jwt,
+    // check('id', 'La petición no contiene un identificador válido')
+    // .isMongoId,
+    validarCampos
+], putWordById);
 
-router.delete('/:id', deleteWordById);
+router.delete('/:id', [
+    validar_jwt,
+    validarCampos
+], deleteWordById);
 
 
 module.exports = router;
