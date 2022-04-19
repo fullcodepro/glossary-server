@@ -48,14 +48,20 @@ ctrlWords.postWord = async (req, res) => {
         const data = {
             wordName: wordName.toLowerCase(),
             definition, categoryId,
-            date: new Date()
+            date: new Date(),
+            createdFor: req.user._id,
+            modifiedFor: req.user._id
         }
         const newWord = new Words(data);
-        const word = await newWord.save();
+        const word = await newWord.save()
+
+        const result = await Words.findById(word._id)
+            .populate('categoryId')
+            .sort({ wordName: 1 });
 
         return res.status(201).json({
             msg: 'Item agregado satisfactoriamente.',
-            word
+            word: result
         });
     } catch (error) {
         console.log('Error al crear palabra: ', error);
@@ -77,9 +83,12 @@ ctrlWords.putWordById = async (req, res) => {
         toUpdateWord = {
             wordName: wordName.toLowerCase(),
             definition,
-            categoryId
+            categoryId: [categoryId],
+            modifiedFor: req.user._id
         }
-        const wordUpdated = await Words.findByIdAndUpdate(id, toUpdateWord );
+        const wordUpdated = await Words.findByIdAndUpdate(id, toUpdateWord)
+            .populate('categoryId')
+            .sort({ wordName: 1 });
 
         return res.status(200).json({
             msg: 'Item actualizado con éxito',
@@ -93,6 +102,7 @@ ctrlWords.putWordById = async (req, res) => {
     }
 };
 
+// TODO: Reemplazar eliminación física por lógica (ej: { active: false })
 ctrlWords.deleteWordById = async (req, res) => {
     const { id } = req.params;
 
@@ -101,14 +111,14 @@ ctrlWords.deleteWordById = async (req, res) => {
     });
 
     try {
-    const wordToDelete = await Words.findById(id);
-        if(!wordToDelete) return res.status(400).json({
-            msg:'El item que desea eliminar no existe'
+        const wordToDelete = await Words.findById(id);
+        if (!wordToDelete) return res.status(400).json({
+            msg: 'El item que desea eliminar no existe'
         });
     } catch (error) {
         console.log('Error el intentar eliminar un item: ', error);
         return res.status(500).json({
-            msg:'Error internal server'
+            msg: 'Error internal server'
         })
     }
 

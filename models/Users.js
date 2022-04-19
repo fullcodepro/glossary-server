@@ -2,6 +2,9 @@ const { model, Schema } = require('mongoose');
 
 const UserSchema = new Schema({
     active: { type: Boolean, default: true },
+    firstName: { type: String, required: true},
+    lastName: { type: String, required: true},
+    displayName: { type: String, required: true},
     email: { type: String, required: true },
     password: { type: String, required: true },
     role: { type: String, required: true },

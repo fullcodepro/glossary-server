@@ -17,6 +17,12 @@ const NewWordSchema = Schema({
         type: String,
         required: true,
     },
+    createdFor: {
+        type: Schema.Types.ObjectId, ref: 'Users'
+    },
+    modifiedFor: {
+        type: Schema.Types.ObjectId, ref: 'Users'
+    }
 }, {
     timestamps: true,
     versionKey: false

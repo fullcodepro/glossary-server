@@ -26,12 +26,21 @@ ctrlUsers.createUser = async (req, res) => {
     let newUser = {};
 
     // Desestructuramos la información recibida del cliente
-    const { username, password, email, role, ...otherData } = req.body;
+    const { username, password, email, role, firstName, lastName, ...otherData } = req.body;
+
+    if(!username || !password || !email || !role || !firstName || !lastName) {
+        return res.status(400).json({
+            msg:'Todos los campos son necesarios'
+        })
+    }
 
     // Se instancia un nuevo usuario
     try {
 
         newUser = new User({
+            firstName,
+            lastName,
+            displayName: `${(firstName).trim()} ${(lastName).trim()}`,
             email,
             username,
             password,
@@ -62,6 +71,8 @@ ctrlUsers.createUser = async (req, res) => {
 ctrlUsers.editUser = async (req, res) => {
 
     const { id } = req.params;
+
+    if(!id) return res.status(400).json({msg: 'No hay id en la petición'})
 
     const { username, password, role, ...resto } = req.body;
 
