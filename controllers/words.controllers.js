@@ -86,7 +86,7 @@ ctrlWords.putWordById = async (req, res) => {
             categoryId: [categoryId],
             modifiedFor: req.user._id
         }
-        const wordUpdated = await Words.findByIdAndUpdate(id, toUpdateWord)
+        const wordUpdated = await Words.findByIdAndUpdate(id, toUpdateWord, {new: true})
             .populate('categoryId')
             .sort({ wordName: 1 });
 
