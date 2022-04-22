@@ -1,11 +1,13 @@
 const Words = require("../models/Words");
 const Categories = require('../models/Cateogries');
+const Users = require('../models/Users');
 const ctrlWords = {};
 
 ctrlWords.getWords = async (req, res) => {
     try {
         const words = await Words.find()
             .populate('categoryId')
+            .populate('createdFor', ['firstName', 'lastName'])
             .sort({ wordName: 1 });
 
         return res.json(words);
@@ -57,6 +59,7 @@ ctrlWords.postWord = async (req, res) => {
 
         const result = await Words.findById(word._id)
             .populate('categoryId')
+            .populate('createdFor')
             .sort({ wordName: 1 });
 
         return res.status(201).json({
@@ -86,8 +89,9 @@ ctrlWords.putWordById = async (req, res) => {
             categoryId: [categoryId],
             modifiedFor: req.user._id
         }
-        const wordUpdated = await Words.findByIdAndUpdate(id, toUpdateWord, {new: true})
+        const wordUpdated = await Words.findByIdAndUpdate(id, toUpdateWord, { new: true })
             .populate('categoryId')
+            .populate('createdFor')
             .sort({ wordName: 1 });
 
         return res.status(200).json({
