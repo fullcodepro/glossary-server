@@ -1,12 +1,20 @@
 // Importaciones de librerías
 const express = require('express');
+const http = require('http');
 const path = require('path');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const cors = require('cors');
+const socketio = require("socket.io");
+const Sockets = require("./models/sockets");
+
+// Configs
 
 // Initializations
 const app = express();
+const server = http.createServer(app);
+const io = socketio(server);
+
 require('dotenv').config();
 require('./database');
 
@@ -17,8 +25,10 @@ app.use(morgan('dev'))
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Configs
-const port = process.env.PORT || 5000;
+new Sockets(io)
+const port = process.env.PORT || 6000;
+
+
 
 // Statics files
 app.use(express.static(path.join(__dirname, '/public')));
@@ -30,5 +40,5 @@ app.use('/api/word', require('./routes/words.routes'));
 app.use('/api/category', require('./routes/categories.routes'));
 
 // Servidor en escucha
-app.listen(port, () => console.log(`Server running on http://127.0.0.1:${port}`));
+server.listen(port, () => console.log(`Server running on http://127.0.0.1:${port}`));
 
