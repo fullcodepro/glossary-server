@@ -19,28 +19,30 @@ const {
 router.get('/', getUsers)
 
 // Ruta para crear un usuario
-router.post('/', [
-    validar_jwt,
-    adminRole,
-    tieneRol('admin_user', 'common_user'),
-    check('username', 'El usuario no es correcto')
-    .isEmail(),
+router.post('/'
+// , [
+//     validar_jwt,
+//     adminRole,
+//     tieneRol('admin_user', 'common_user'),
+//     check('username', 'El usuario no es correcto')
+//     .isEmail(),
 
-    check('username')
-    .custom(existeEmail),
+//     check('username')
+//     .custom(existeEmail),
     
-    check('password', 'La contraseña debe contener al menos 8 caracteres')
-    .isLength({min:8}),
+//     check('password', 'La contraseña debe contener al menos 8 caracteres')
+//     .isLength({min:8}),
     
-    check('role', 'El rol es obligatorio')
-    .not()
-    .isEmpty(),
+//     check('role', 'El rol es obligatorio')
+//     .not()
+//     .isEmpty(),
 
-    check('role')
-    .custom(rolValido),
+//     check('role')
+//     .custom(rolValido),
 
-    validarCampos
-] ,createUser)
+//     validarCampos
+// ] 
+,createUser)
 
 // Ruta para editar un usuario
 router.put('/:id', [
@@ -75,7 +77,8 @@ router.delete('/:id', [
 
     validarCampos
     
-], deleteUser)
+]
+, deleteUser)
 
 
 

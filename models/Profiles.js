@@ -1,7 +1,7 @@
 const { model, Schema } = require('mongoose');
 
 const NewPersonSchema = new Schema({
-    names: {
+    firstName: {
         type: String,
         required: true,
         trim: true
@@ -18,9 +18,22 @@ const NewPersonSchema = new Schema({
     birthDate: {
         type: Date,
     },
-    userId: {
-        type: Schema.Types.ObjectId, ref: 'Users',
-        required: [true, 'Es necesario el id de usuario de la persona']
+    interests: {
+        type: Object,
+    },
+    location: {
+        type: Object,
+        lat: String,
+        lg: String,
+        Province: String,
+        City: String,
+    },
+    skills: {
+        type: Object,
+        userId: {
+            type: Schema.Types.ObjectId, ref: 'Users',
+            required: [true, 'Es necesario el id de usuario de la persona']
+        }
     }
 });
 
