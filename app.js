@@ -21,12 +21,12 @@ require('./database');
 // Middlewares
 app.use(helmet());
 app.use(cors());
-app.use(morgan('dev'))
+app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 new Sockets(io)
-const port = process.env.PORT || 6000;
+const port = process.env.PORT || 5500;
 
 
 

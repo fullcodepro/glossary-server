@@ -22,6 +22,11 @@ class Sockets {
                 this.messagesList.messageAdd(user, message);
                 this.io.emit('new-message', this.messagesList.getMessages());
             })
+            
+            socket.on('get-messages', () => {
+                this.io.emit('new-message', this.messagesList.getMessages());
+            })
+
 
             // Actualizar nombre de banda
             // socket.on('update-name', ({id, name}) => {

@@ -3,9 +3,8 @@ const Messages = require("./Messages");
 class MessageList {
   constructor() {
     this.arrMessages = [
-      new Messages("Jhon", "Hola soy Jhon"),
-      new Messages("Elisa", "Hola, soy Elisa"),
-      new Messages("Julia", "Hola soy Julia"),
+      new Messages("Jhon", "Hola!"),
+      new Messages("Jhon", "Bienvenid@ :)"),
     ];
   }
 
